@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: vfit-postgres
+    environment:
+      POSTGRES_DB: vfit_db
+      POSTGRES_USER: vfit_user
+      POSTGRES_PASSWORD: vfit_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - vfit-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vfit_user -d vfit_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: vfit-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/vfit_db
+      SPRING_DATASOURCE_USERNAME: vfit_user
+      SPRING_DATASOURCE_PASSWORD: vfit_pass
+    networks:
+      - vfit-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: on-failure
+
+volumes:
+  postgres_data:
+
+networks:
+  vfit-network:
+    driver: bridge
