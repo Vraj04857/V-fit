@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import PageBackground from '../components/PageBackground';
 
 const features = [
   {
@@ -92,7 +93,8 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div style={{ minHeight: '100vh' }}>
+    <PageBackground>
+      <div style={{ minHeight: '100vh' }}>
       <Navbar />
 
       {/* Hero */}
@@ -464,9 +466,10 @@ export default function LandingPage() {
           <span style={{ fontFamily: 'var(--font-display)', color: 'var(--cream)', fontSize: '16px' }}>V-Fit</span>
         </div>
         <p style={{ fontSize: '13px', color: 'rgba(247,244,238,0.35)' }}>
-          © 2025 V-Fit · Vraj Patel
+          © 2025 V-Fit · Vraj Patel · Master's Thesis Project
         </p>
       </footer>
     </div>
+    </PageBackground>
   );
 }

@@ -1,9 +1,5 @@
 package com.vfit.modules.user.service;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.gson.GsonFactory;
 import com.vfit.modules.user.dto.AuthResponse;
 import com.vfit.modules.user.dto.GoogleAuthRequest;
 import com.vfit.modules.user.entity.Profile;
@@ -11,50 +7,59 @@ import com.vfit.modules.user.entity.User;
 import com.vfit.modules.user.repository.ProfileRepository;
 import com.vfit.modules.user.repository.UserRepository;
 import com.vfit.shared.security.JwtUtil;
-import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class GoogleAuthService {
 
+    private static final Logger log = LoggerFactory.getLogger(GoogleAuthService.class);
+
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
     private final JwtUtil jwtUtil;
-
-    @Value("${google.client-id}")
-    private String googleClientId;
+    private final WebClient webClient;
 
     public GoogleAuthService(UserRepository userRepository,
-                             ProfileRepository profileRepository,
-                             JwtUtil jwtUtil) {
+                            ProfileRepository profileRepository,
+                            JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.profileRepository = profileRepository;
         this.jwtUtil = jwtUtil;
+        this.webClient = WebClient.builder().build();
     }
 
     public AuthResponse authenticateWithGoogle(GoogleAuthRequest request) {
         try {
-            // Verify the Google token
-            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
-                    new NetHttpTransport(), GsonFactory.getDefaultInstance())
-                    .setAudience(Collections.singletonList(googleClientId))
-                    .build();
+            log.info("Google auth attempt — verifying access token with Google userinfo API");
 
-            GoogleIdToken idToken = verifier.verify(request.getCredential());
-            if (idToken == null) {
-                throw new RuntimeException("Invalid Google token");
+            // Use the access_token to call Google's userinfo endpoint
+            // This is the correct approach when frontend uses useGoogleLogin() 
+            // which returns an access_token (NOT an ID token)
+            Map<String, Object> userInfo = webClient.get()
+                    .uri("https://www.googleapis.com/oauth2/v3/userinfo")
+                    .headers(h -> h.setBearerAuth(request.getCredential()))
+                    .retrieve()
+                    .bodyToMono(Map.class)
+                    .block();
+
+            if (userInfo == null || !userInfo.containsKey("email")) {
+                throw new RuntimeException("Failed to retrieve user info from Google");
             }
 
-            GoogleIdToken.Payload payload = idToken.getPayload();
-            String email = payload.getEmail();
-            String name = (String) payload.get("name");
+            String email = (String) userInfo.get("email");
+            String name = (String) userInfo.get("name");
             if (name == null || name.isEmpty()) {
                 name = email.split("@")[0];
             }
+
+            log.info("Google auth — verified email: {}", email);
 
             Optional<User> existingUser = userRepository.findByEmail(email);
             User user;
@@ -63,11 +68,18 @@ public class GoogleAuthService {
             if (existingUser.isPresent()) {
                 // Existing user — just log them in
                 user = existingUser.get();
+
+                if (!user.getIsActive()) {
+                    throw new RuntimeException("Account is deactivated. Please contact support.");
+                }
+
                 // Get their profile name
                 Profile profile = profileRepository.findByUser_UserId(user.getUserId())
                         .orElse(null);
                 displayName = (profile != null && profile.getName() != null)
                         ? profile.getName() : name;
+
+                log.info("Google auth — existing user login: {}", email);
             } else {
                 // New Google user — auto-register
                 user = new User();
@@ -84,9 +96,11 @@ public class GoogleAuthService {
                 profileRepository.save(profile);
 
                 displayName = name;
+
+                log.info("Google auth — new user registered: {}", email);
             }
 
-            // Generate JWT using JwtUtil — same as UserService does
+            // Generate JWT
             String token = jwtUtil.generateToken(user.getEmail(), user.getUserId());
 
             return new AuthResponse(
@@ -98,6 +112,7 @@ public class GoogleAuthService {
             );
 
         } catch (Exception e) {
+            log.error("Google authentication failed: {}", e.getMessage(), e);
             throw new RuntimeException("Google authentication failed: " + e.getMessage());
         }
     }

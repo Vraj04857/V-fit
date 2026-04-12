@@ -43,6 +43,31 @@ body {
   color: var(--ink);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  position: relative;
+}
+
+/* Global fitness background on every page */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(2px);
+  opacity: 0.55;
+  z-index: -2;
+  pointer-events: none;
+}
+
+/* Yellow-green tint overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(240, 240, 216, 0.45);
+  z-index: -1;
+  pointer-events: none;
 }
 
 a { text-decoration: none; color: inherit; }

@@ -23,6 +23,20 @@ spring:
       hibernate:
         format_sql: true
     open-in-view: false
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: vfit.noreply@gmail.com
+    password: gslnmitpnyprdvzl
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+app:
+  frontend-url: http://localhost:3000
 
 server:
   port: 8080
@@ -67,3 +81,4 @@ logging:
     
 google:
   client-id: 105127700631-0jikef3c58klcg0f96uki07s6vi4d6m7.apps.googleusercontent.com
+
