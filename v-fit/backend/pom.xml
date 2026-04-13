@@ -21,8 +21,6 @@
     <properties>
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mockito.version>5.14.2</mockito.version>
-        <byte-buddy.version>1.15.10</byte-buddy.version>
     </properties>
 
     <dependencies>
@@ -103,7 +101,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Force newer ByteBuddy for Java 25 -->
+        <!-- Force newer ByteBuddy for Java 25
         <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
@@ -116,7 +114,7 @@
             <version>1.15.10</version>
             <scope>test</scope>
         </dependency>
-        
+         -->
         <!--Google login Auth-->
         <dependency>
             <groupId>com.google.api-client</groupId>
