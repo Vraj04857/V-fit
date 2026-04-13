@@ -11,4 +11,8 @@ public interface ExerciseLibraryRepository extends JpaRepository<ExerciseLibrary
     List<ExerciseLibrary> findByCategoryAndDifficultyLevel(
             String category, String difficultyLevel);
     List<ExerciseLibrary> findByCategory(String category);
+    List<ExerciseLibrary> findByMuscleGroup(String muscleGroup);
+    List<ExerciseLibrary> findByMuscleGroupIn(List<String> muscleGroups);
+    List<ExerciseLibrary> findByMuscleGroupAndDifficultyLevel(
+            String muscleGroup, String difficultyLevel);
 }

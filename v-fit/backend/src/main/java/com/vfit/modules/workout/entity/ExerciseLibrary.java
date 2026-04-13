@@ -18,8 +18,14 @@ public class ExerciseLibrary {
     @Column(length = 50)
     private String category;
 
+    @Column(name = "muscle_group", length = 50)
+    private String muscleGroup;
+
     @Column(name = "difficulty_level", length = 20)
     private String difficultyLevel;
+
+    @Column(length = 100)
+    private String equipment;
 
     @Column(length = 500)
     private String description;
@@ -37,7 +43,9 @@ public class ExerciseLibrary {
     public Long getLibraryExerciseId() { return libraryExerciseId; }
     public String getExerciseName() { return exerciseName; }
     public String getCategory() { return category; }
+    public String getMuscleGroup() { return muscleGroup; }
     public String getDifficultyLevel() { return difficultyLevel; }
+    public String getEquipment() { return equipment; }
     public String getDescription() { return description; }
     public Integer getCaloriesBurnedPerMin() { return caloriesBurnedPerMin; }
     public LocalDateTime getCreatedAt() { return createdAt; }
@@ -46,7 +54,9 @@ public class ExerciseLibrary {
     public void setLibraryExerciseId(Long id) { this.libraryExerciseId = id; }
     public void setExerciseName(String name) { this.exerciseName = name; }
     public void setCategory(String category) { this.category = category; }
+    public void setMuscleGroup(String muscleGroup) { this.muscleGroup = muscleGroup; }
     public void setDifficultyLevel(String level) { this.difficultyLevel = level; }
+    public void setEquipment(String equipment) { this.equipment = equipment; }
     public void setDescription(String description) { this.description = description; }
     public void setCaloriesBurnedPerMin(Integer cal) { this.caloriesBurnedPerMin = cal; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
