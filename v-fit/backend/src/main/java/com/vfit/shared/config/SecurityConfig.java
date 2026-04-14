@@ -82,7 +82,7 @@ public class SecurityConfig {
     .requestMatchers("/progress/**").authenticated()
     .requestMatchers("/ai/**").authenticated()
     .requestMatchers("/auth/google").permitAll()
-    .requestMatchers("/admin/**").hasAuthority("ADMIN")
+    .requestMatchers("/admin/**").authenticated()
     // All other endpoints require authentication
     .anyRequest().authenticated()
 )
