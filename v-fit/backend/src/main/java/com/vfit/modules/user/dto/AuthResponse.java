@@ -7,9 +7,10 @@ public class AuthResponse {
     private Long userId;
     private String email;
     private String name;
+    private String role;
     private String message;
 
-    // ✅ Constructors
+    //  Constructors
     public AuthResponse() {}
 
     public AuthResponse(String token, Long userId, String email, String name, String message) {
@@ -26,6 +27,7 @@ public class AuthResponse {
     public Long getUserId() { return userId; }
     public String getEmail() { return email; }
     public String getName() { return name; }
+    public String getRole() { return role; }
     public String getMessage() { return message; }
 
     // ✅ Setters
@@ -34,5 +36,6 @@ public class AuthResponse {
     public void setUserId(Long userId) { this.userId = userId; }
     public void setEmail(String email) { this.email = email; }
     public void setName(String name) { this.name = name; }
+    public void setRole(String role) { this.role = role; }
     public void setMessage(String message) { this.message = message; }
 }

@@ -34,9 +34,15 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const res = await axios.post('http://localhost:8080/api/auth/login', form);
+      console.log('LOGIN RESPONSE:', res.data);
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data));
-      navigate('/dashboard');
+
+      if (res.data.role === 'ADMIN') {
+        navigate('/admin');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (err) {
       setServerError(err.response?.data?.message || 'Invalid credentials. Please try again.');
     } finally {

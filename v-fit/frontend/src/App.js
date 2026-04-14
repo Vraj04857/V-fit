@@ -13,6 +13,7 @@ import WorkoutPage from './pages/WorkoutPage';
 import DietPage from './pages/DietPage';
 import ProgressPage from './pages/ProgressPage';
 import AiAssistantPage from './pages/Aiassistantpage';
+import AdminPage from './pages/Adminpage';
 
 const GOOGLE_CLIENT_ID = '105127700631-0jikef3c58klcg0f96uki07s6vi4d6m7.apps.googleusercontent.com';
 
@@ -32,6 +33,7 @@ function App() {
           <Route path="/diet" element={<DietPage/>}/>
           <Route path="/progress" element={<ProgressPage/>}/>
           <Route path="/ai" element={<AiAssistantPage/>}/>
+          <Route path="admin" element={<AdminPage />}/>
         </Routes>
       </Router>
     </GoogleOAuthProvider>

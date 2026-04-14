@@ -72,15 +72,16 @@ public class UserService {
         // Generate JWT
         String token = jwtUtil.generateToken(savedUser.getEmail(), savedUser.getUserId());
 
-        return new AuthResponse(
-                token,
-                savedUser.getUserId(),
-                savedUser.getEmail(),
-                request.getName(),
-                "Registration successful! Welcome to V-Fit!"
+        AuthResponse response = new AuthResponse(
+        token,
+        savedUser.getUserId(),
+        savedUser.getEmail(),
+        request.getName(),
+        "Registration successful! Welcome to V-Fit!"
         );
-    }
-
+        response.setRole(savedUser.getRole());
+        return response;
+}
     // UC-02 Login
     public AuthResponse login(LoginRequest request) {
         try {
@@ -111,13 +112,15 @@ public class UserService {
         // Generate JWT token
         String token = jwtUtil.generateToken(user.getEmail(), user.getUserId());
 
-        return new AuthResponse(
-                token,
-                user.getUserId(),
-                user.getEmail(),
-                profile.getName(),
-                "Login successful! Welcome back, " + profile.getName() + "!"
+        AuthResponse response = new AuthResponse(
+            token,
+            user.getUserId(),
+            user.getEmail(),
+            profile.getName(),
+            "Login successful! Welcome back, " + profile.getName() + "!"
         );
+        response.setRole(user.getRole());
+        return response;
     }
 
     // UC-03 Forgot Password — sends reset email
