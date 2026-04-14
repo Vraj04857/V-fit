@@ -1,0 +1,56 @@
+name: V-Fit Deploy to AWS EC2
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build Spring Boot JAR
+        working-directory: ./backend
+        run: mvn clean package -DskipTests
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/v-fit
+            git pull origin main
+
+            # Write .env from GitHub Secrets
+            cat > .env << EOF
+            POSTGRES_DB=vfit_db
+            POSTGRES_USER=vfit_user
+            POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}
+            OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }}
+            WGER_API_KEY=${{ secrets.WGER_API_KEY }}
+            USDA_API_KEY=${{ secrets.USDA_API_KEY }}
+            GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+            FRONTEND_URL=http://${{ secrets.EC2_HOST }}
+            EOF
+
+            # Build JAR on server
+            cd backend && mvn clean package -DskipTests && cd ..
+
+            # Rebuild and restart containers
+            docker compose down
+            docker compose up -d --build
+
+            echo "Deployment complete!"

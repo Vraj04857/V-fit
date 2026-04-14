@@ -5,39 +5,59 @@ services:
     image: postgres:15-alpine
     container_name: vfit-postgres
     environment:
-      POSTGRES_DB: vfit_db
-      POSTGRES_USER: vfit_user
-      POSTGRES_PASSWORD: vfit_pass
-    ports:
-      - "5432:5432"
+      POSTGRES_DB: ${POSTGRES_DB:-vfit_db}
+      POSTGRES_USER: ${POSTGRES_USER:-vfit_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vfit_pass}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - vfit-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U vfit_user -d vfit_db"]
-      interval: 5s
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-vfit_user} -d ${POSTGRES_DB:-vfit_db}"]
+      interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 10s
+      start_period: 20s
+    restart: unless-stopped
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     container_name: vfit-backend
-    ports:
-      - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/vfit_db
-      SPRING_DATASOURCE_USERNAME: vfit_user
-      SPRING_DATASOURCE_PASSWORD: vfit_pass
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-vfit_db}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-vfit_user}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-vfit_pass}
+      JWT_SECRET: ${JWT_SECRET}
+      SPRING_MAIL_PASSWORD: ${MAIL_PASSWORD}
+      EXTERNAL_OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
+      EXTERNAL_WGER_API_KEY: ${WGER_API_KEY}
+      EXTERNAL_USDA_API_KEY: ${USDA_API_KEY}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      APP_FRONTEND_URL: ${FRONTEND_URL}
+      SPRING_PROFILES_ACTIVE: prod
     networks:
       - vfit-network
     depends_on:
       postgres:
         condition: service_healthy
-    restart: on-failure
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: ""
+    container_name: vfit-frontend
+    ports:
+      - "80:80"
+    networks:
+      - vfit-network
+    depends_on:
+      - backend
+    restart: unless-stopped
 
 volumes:
   postgres_data:

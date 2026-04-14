@@ -1,0 +1,83 @@
+spring:
+  application:
+    name: v-fit-backend
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres:5432/vfit_db}
+    username: ${SPRING_DATASOURCE_USERNAME:vfit_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:vfit_pass}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+      validation-timeout: 5000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+    open-in-view: false
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: vfit.noreply@gmail.com
+    password: ${SPRING_MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+app:
+  frontend-url: ${APP_FRONTEND_URL:http://localhost:3000}
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+  error:
+    include-message: always
+    include-binding-errors: always
+
+jwt:
+  secret: ${JWT_SECRET:VFitSecretKeyForJWTTokenGenerationPleaseChangeInProduction2024}
+  expiration: 86400000
+  refresh-expiration: 604800000
+
+external:
+  wger:
+    api-key: ${EXTERNAL_WGER_API_KEY}
+    base-url: https://wger.de/api/v2
+  usda:
+    api-key: ${EXTERNAL_USDA_API_KEY}
+    base-url: https://api.nal.usda.gov/fdc/v1
+  openrouter:
+    api-key: ${EXTERNAL_OPENROUTER_API_KEY}
+    base-url: https://openrouter.ai/api/v1
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.vfit: INFO
+    org.springframework.web: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+google:
+  client-id: ${GOOGLE_CLIENT_ID}
