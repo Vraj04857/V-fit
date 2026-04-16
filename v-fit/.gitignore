@@ -25,6 +25,7 @@ spring-boot-*.log
 # Environment
 .env 
 .env.local
+.env.example
 
 # Docker
 postgres_data/
