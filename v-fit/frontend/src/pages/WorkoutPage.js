@@ -35,6 +35,23 @@ const MUSCLE_LABELS = {
   cardio: 'Cardio',
 };
 
+const CATEGORY_TO_MUSCLE = {
+  'Strength': ['chest', 'back', 'shoulders', 'biceps', 'triceps', 'quads', 'hamstrings', 'glutes'],
+  'Cardio': ['cardio'],
+  'Core': ['abs'],
+  'Flexibility': ['shoulders', 'hamstrings'],
+  'HIIT': ['cardio'],
+};
+
+const muscleFiltered = selectedMuscle
+  ? (library || []).filter(ex => {
+      if (ex.muscleGroup?.toLowerCase() === selectedMuscle.toLowerCase()) return true;
+      if (ex.category?.toLowerCase() === selectedMuscle.toLowerCase()) return true;
+      const mapped = CATEGORY_TO_MUSCLE[ex.category] || [];
+      return mapped.includes(selectedMuscle.toLowerCase());
+    })
+  : [];
+
 /* ── Toast ── */
 function Toast({ message, type, onClose }) {
   useEffect(() => { const t = setTimeout(onClose, 3000); return () => clearTimeout(t); }, [onClose]);
@@ -106,9 +123,13 @@ function PlanModal({ plan, library, gender, onSave, onClose, saving }) {
   const [addMode, setAddMode] = useState('body');
 
   const muscleFiltered = selectedMuscle
-    ? (library || []).filter(ex => ex.muscleGroup?.toLowerCase() === selectedMuscle.toLowerCase())
-    : [];
-
+  ? (library || []).filter(ex =>
+      ex.muscleGroup?.toLowerCase() === selectedMuscle.toLowerCase() ||
+      ex.category?.toLowerCase() === selectedMuscle.toLowerCase() ||
+      ex.category?.toLowerCase().includes(selectedMuscle.toLowerCase())
+    )
+  : [];
+  
   const searchFiltered = search.trim()
     ? (library || []).filter(ex =>
         ex.exerciseName?.toLowerCase().includes(search.toLowerCase()) ||
@@ -528,7 +549,12 @@ function PlanModal({ plan, library, gender, onSave, onClose, saving }) {
                     </p>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
                       {Object.entries(MUSCLE_LABELS).map(([key, label]) => {
-                        const count = (library || []).filter(ex => ex.muscleGroup === key).length;
+      
+                        const count = (library || []).filter(ex =>
+                          ex.muscleGroup === key ||
+                          ex.category?.toLowerCase() === key.toLowerCase()
+                        ).length;
+
                         if (count === 0) return null;
                         return (
                           <button key={key}
@@ -635,7 +661,8 @@ export default function WorkoutPage() {
       setExpandedPlan(res.data.planId);
       showToast('Workout plan generated!');
     } catch (e) {
-      showToast(e.response?.data || 'Failed to generate plan. Complete your profile first.', 'error');
+      showToast('Please complete your profile first — add fitness goal & activity level', 'error');
+      setTimeout(() => navigate('/profile'), 3000);
     } finally { setGenerating(false); }
   };
 

@@ -60,7 +60,7 @@ external:
     base-url: https://api.nal.usda.gov/fdc/v1
 
   openrouter:
-    api-key: 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
+    api-key: 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
     base-url: https://openrouter.ai/api/v1
 
 management:
