@@ -33,7 +33,7 @@ export default function LoginPage() {
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:8080/api/auth/login', form);
+      const res = await axios.post('/api/auth/login', form);
       console.log('LOGIN RESPONSE:', res.data);
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data));
@@ -54,7 +54,7 @@ export default function LoginPage() {
     setGoogleLoading(true);
     setServerError('');
     try {
-      const res = await axios.post('http://localhost:8080/api/auth/google', {
+      const res = await axios.post('/api/auth/google', {
         credential: tokenResponse.access_token,
       });
       localStorage.setItem('token', res.data.token);

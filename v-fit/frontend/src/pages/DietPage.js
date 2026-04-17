@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import PageBackground from '../components/PageBackground';
 
-const API = 'http://localhost:8080/api';
+const API = '/api';
 const getHeaders = () => ({ Authorization: `Bearer ${localStorage.getItem('token')}` });
 
 const NAV = [

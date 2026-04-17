@@ -19,7 +19,7 @@ export default function ForgotPasswordPage() {
 
     setLoading(true);
     try {
-      await axios.post('http://localhost:8080/api/auth/forgot-password', { email });
+      await axios.post('/api/auth/forgot-password', { email });
       setSent(true);
     } catch (err) {
       // Always show success (backend does the same for security)

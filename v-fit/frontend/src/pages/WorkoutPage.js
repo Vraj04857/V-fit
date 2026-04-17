@@ -4,7 +4,7 @@ import axios from 'axios';
 import PageBackground from '../components/PageBackground';
 import BodyMap from '../components/Bodymap';
 
-const API = 'http://localhost:8080/api';
+const API = '/api';
 const getHeaders = () => ({ Authorization: `Bearer ${localStorage.getItem('token')}` });
 
 /* ── Sidebar nav ── */

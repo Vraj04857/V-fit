@@ -59,7 +59,7 @@ export default function RegisterPage() {
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
     setLoading(true);
     try {
-      await axios.post('http://localhost:8080/api/auth/register', {
+      await axios.post('/api', {
         email: form.email, password: form.password,
         name: form.name, age: parseInt(form.age),
         gender: form.gender, fitnessGoal: form.fitnessGoal,
@@ -76,7 +76,7 @@ export default function RegisterPage() {
     setGoogleLoading(true);
     setServerError('');
     try {
-      const res = await axios.post('http://localhost:8080/api/auth/google', { credential: tokenResponse.access_token });
+      const res = await axios.post('/api/auth/google', { credential: tokenResponse.access_token });
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data));
       navigate('/dashboard');
