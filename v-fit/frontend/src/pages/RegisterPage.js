@@ -59,7 +59,7 @@ export default function RegisterPage() {
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
     setLoading(true);
     try {
-      await axios.post('/api', {
+      await axios.post('/api/auth/register', {
         email: form.email, password: form.password,
         name: form.name, age: parseInt(form.age),
         gender: form.gender, fitnessGoal: form.fitnessGoal,
