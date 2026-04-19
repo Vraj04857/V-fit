@@ -35,11 +35,13 @@ const MUSCLE_LABELS = {
   cardio: 'Cardio',
 };
 
+// Maps DB category values to body map muscle keys
 const CATEGORY_TO_MUSCLE = {
-  'Strength': ['chest', 'back', 'shoulders', 'biceps', 'triceps', 'quads', 'hamstrings', 'glutes'],
+  'Strength': ['chest', 'back', 'shoulders', 'biceps', 'triceps', 'quads', 'hamstrings', 'glutes', 'calves', 'traps', 'lowerback'],
+  'Strenght': ['chest', 'back', 'shoulders', 'biceps', 'triceps', 'quads', 'hamstrings', 'glutes', 'calves', 'traps', 'lowerback'],
   'Cardio': ['cardio'],
   'Core': ['abs'],
-  'Flexibility': ['shoulders', 'hamstrings'],
+  'Flexibility': ['shoulders', 'hamstrings', 'calves', 'back'],
   'HIIT': ['cardio'],
 };
 
@@ -113,14 +115,16 @@ function PlanModal({ plan, library, gender, onSave, onClose, saving }) {
   const [selectedMuscle, setSelectedMuscle] = useState(null);
   const [addMode, setAddMode] = useState('body');
 
+  // Fixed: uses CATEGORY_TO_MUSCLE to map DB categories to body map muscle keys
   const muscleFiltered = selectedMuscle
-  ? (library || []).filter(ex =>
-      ex.muscleGroup?.toLowerCase() === selectedMuscle.toLowerCase() ||
-      ex.category?.toLowerCase() === selectedMuscle.toLowerCase() ||
-      ex.category?.toLowerCase().includes(selectedMuscle.toLowerCase())
-    )
-  : [];
-  
+    ? (library || []).filter(ex => {
+        if (ex.muscleGroup?.toLowerCase() === selectedMuscle.toLowerCase()) return true;
+        if (ex.category?.toLowerCase() === selectedMuscle.toLowerCase()) return true;
+        const mapped = CATEGORY_TO_MUSCLE[ex.category] || [];
+        return mapped.includes(selectedMuscle.toLowerCase());
+      })
+    : [];
+
   const searchFiltered = search.trim()
     ? (library || []).filter(ex =>
         ex.exerciseName?.toLowerCase().includes(search.toLowerCase()) ||
@@ -212,7 +216,6 @@ function PlanModal({ plan, library, gender, onSave, onClose, saving }) {
     }} onClick={onClose}>
       <div style={{
         ...cardBg, padding: '0',
-        /* Wider modal to fit body map + exercise list side by side */
         maxWidth: '1060px', width: '96%',
         maxHeight: '90vh', display: 'flex', flexDirection: 'column',
         boxShadow: '0 16px 48px rgba(0,0,0,0.15)',
@@ -275,11 +278,6 @@ function PlanModal({ plan, library, gender, onSave, onClose, saving }) {
           </div>
         </div>
 
-        {/* ══════════════════════════════════════
-            Two-Column Body
-            Left: exercise plan slots
-            Right: body map + exercise browser
-            ══════════════════════════════════════ */}
         <div style={{
           flex: 1, overflow: 'hidden',
           display: 'grid', gridTemplateColumns: '1fr 500px',
@@ -358,10 +356,7 @@ function PlanModal({ plan, library, gender, onSave, onClose, saving }) {
             )}
           </div>
 
-          {/* ── RIGHT COLUMN: 500px wide
-                overflow: hidden — no column-level scroll ever.
-                Body map mode:  [body map | exercise list] side by side
-                Search mode:    full-width search input + results            ── */}
+          {/* ── RIGHT COLUMN ── */}
           <div style={{
             borderLeft: '1px solid rgba(44,44,26,0.06)',
             overflow: 'hidden',
@@ -408,14 +403,7 @@ function PlanModal({ plan, library, gender, onSave, onClose, saving }) {
             </div>
 
             {addMode === 'body' ? (
-              /* ══════════════════════════════════════════
-                 BODY MAP MODE
-                 Left sub-column (200px): full body map, scrollable
-                 Right sub-column (flex 1): exercise list for selected muscle
-                 ══════════════════════════════════════════ */
               <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
-
-                {/* Body map column — full body always visible, internal scroll if needed */}
                 <div style={{
                   width: '200px', flexShrink: 0,
                   borderRight: '1px solid rgba(44,44,26,0.08)',
@@ -430,14 +418,12 @@ function PlanModal({ plan, library, gender, onSave, onClose, saving }) {
                   />
                 </div>
 
-                {/* Exercise list column */}
                 <div style={{
                   flex: 1, overflow: 'hidden',
                   display: 'flex', flexDirection: 'column',
                 }}>
                   {selectedMuscle ? (
                     <>
-                      {/* Header */}
                       <div style={{
                         padding: '10px 14px',
                         borderBottom: '1px solid rgba(44,44,26,0.08)',
@@ -481,14 +467,11 @@ function PlanModal({ plan, library, gender, onSave, onClose, saving }) {
                           </button>
                         </div>
                       </div>
-
-                      {/* Scrollable exercise list */}
                       <div style={{ flex: 1, overflowY: 'auto' }}>
                         {renderExerciseItems(muscleFiltered)}
                       </div>
                     </>
                   ) : (
-                    /* Empty state when no muscle selected */
                     <div style={{
                       flex: 1, display: 'flex', flexDirection: 'column',
                       alignItems: 'center', justifyContent: 'center',
@@ -513,7 +496,6 @@ function PlanModal({ plan, library, gender, onSave, onClose, saving }) {
               </div>
 
             ) : (
-              /* ── SEARCH MODE ── */
               <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', padding: '12px', gap: '8px' }}>
                 <input
                   type="text" className="form-input"
@@ -540,12 +522,12 @@ function PlanModal({ plan, library, gender, onSave, onClose, saving }) {
                     </p>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
                       {Object.entries(MUSCLE_LABELS).map(([key, label]) => {
-      
-                        const count = (library || []).filter(ex =>
-                          ex.muscleGroup === key ||
-                          ex.category?.toLowerCase() === key.toLowerCase()
-                        ).length;
-
+                        const count = (library || []).filter(ex => {
+                          if (ex.muscleGroup === key) return true;
+                          if (ex.category?.toLowerCase() === key.toLowerCase()) return true;
+                          const mapped = CATEGORY_TO_MUSCLE[ex.category] || [];
+                          return mapped.includes(key.toLowerCase());
+                        }).length;
                         if (count === 0) return null;
                         return (
                           <button key={key}

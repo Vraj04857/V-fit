@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
 import Navbar from '../components/Navbar';
 import PageBackground from '../components/PageBackground';
@@ -13,6 +13,7 @@ export default function LoginPage() {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [serverError, setServerError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [searchParams] = useSearchParams();
 
   const validate = () => {
     const errs = {};
@@ -93,6 +94,12 @@ export default function LoginPage() {
               borderRadius: 'var(--radius-lg)', border: '1px solid rgba(44,44,26,0.16)',
               padding: '32px', boxShadow: '0 12px 48px rgba(44,44,26,0.18)',
             }}>
+              {searchParams.get('session') === 'expired' && (
+              <div style={{ background: 'rgba(230,126,34,0.1)', border: '1px solid rgba(230,126,34,0.3)', borderRadius: 'var(--radius-md)', padding: '12px 16px', marginBottom: '16px', fontSize: '14px', color: '#E67E22', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.5"/><path d="M8 5v4M8 11v.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+                Your session expired. Please log in again.
+              </div>
+              )}
               {serverError && (
                 <div style={{ background: 'rgba(192,57,43,0.1)', border: '1px solid rgba(192,57,43,0.25)', borderRadius: 'var(--radius-md)', padding: '12px 16px', marginBottom: '20px', fontSize: '14px', color: 'var(--accent)' }}>
                   {serverError}
