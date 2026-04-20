@@ -47,7 +47,7 @@ export default function Navbar() {
       {/* Nav links (landing only) */}
       {isLanding && (
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-          {['Features', 'How it Works', 'About'].map(item => (
+          {['Features', 'How it Works'].map(item => (
             <a
               key={item}
               href={`#${item.toLowerCase().replace(/\s+/g, '-')}`}
@@ -56,7 +56,10 @@ export default function Navbar() {
             >
               {item}
             </a>
-          ))}
+        ))}
+        <Link to="/about" className="btn btn-ghost" style={{ fontSize: '14px' }}>
+        About
+        </Link>
         </div>
       )}
 

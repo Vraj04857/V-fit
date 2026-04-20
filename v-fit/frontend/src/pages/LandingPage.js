@@ -39,18 +39,6 @@ const features = [
   {
     icon: (
       <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-        <rect x="3" y="3" width="16" height="16" rx="3" stroke="currentColor" strokeWidth="1.5"/>
-        <path d="M7 3V5M15 3V5M3 9H19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-        <circle cx="7" cy="14" r="1.5" fill="currentColor" opacity="0.6"/>
-        <circle cx="11" cy="14" r="1.5" fill="currentColor" opacity="0.9"/>
-      </svg>
-    ),
-    title: 'Reminders & Calendar',
-    description: 'Stay on track with workout and diet reminders. See your full schedule in weekly and monthly calendar views.',
-  },
-  {
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
         <path d="M4 18L8 14M8 14C8 14 10 16 11 16C12 16 20 8 20 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
         <circle cx="5" cy="10" r="3" stroke="currentColor" strokeWidth="1.5"/>
         <path d="M17 4C17 4 18.5 5.5 18.5 7C18.5 8.5 17 10 17 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" opacity="0.5"/>
@@ -109,24 +97,15 @@ export default function LandingPage() {
         position: 'relative',
         overflow: 'hidden',
       }}>
-        {/* Background decorations */}
         <div style={{
-          position: 'absolute',
-          top: '15%',
-          left: '8%',
-          width: '380px',
-          height: '380px',
-          borderRadius: '50%',
+          position: 'absolute', top: '15%', left: '8%',
+          width: '380px', height: '380px', borderRadius: '50%',
           background: 'radial-gradient(circle, rgba(107,158,94,0.15) 0%, transparent 70%)',
           pointerEvents: 'none',
         }} />
         <div style={{
-          position: 'absolute',
-          bottom: '10%',
-          right: '5%',
-          width: '300px',
-          height: '300px',
-          borderRadius: '50%',
+          position: 'absolute', bottom: '10%', right: '5%',
+          width: '300px', height: '300px', borderRadius: '50%',
           background: 'radial-gradient(circle, rgba(192,57,43,0.07) 0%, transparent 70%)',
           pointerEvents: 'none',
         }} />
@@ -182,24 +161,15 @@ export default function LandingPage() {
             </a>
           </div>
 
-          {/* Mini stats */}
           <div
             className="animate-fadeUp delay-4"
-            style={{
-              display: 'flex',
-              gap: '40px',
-              justifyContent: 'center',
-              marginTop: '64px',
-              flexWrap: 'wrap',
-            }}
+            style={{ display: 'flex', gap: '40px', justifyContent: 'center', marginTop: '64px', flexWrap: 'wrap' }}
           >
             {stats.map(s => (
               <div key={s.label} style={{ textAlign: 'center' }}>
                 <div style={{
                   fontFamily: 'var(--font-display)',
-                  fontSize: '28px',
-                  color: 'var(--ink)',
-                  letterSpacing: '-0.03em',
+                  fontSize: '28px', color: 'var(--ink)', letterSpacing: '-0.03em',
                 }}>{s.value}</div>
                 <div style={{ fontSize: '13px', color: 'var(--ink-light)', marginTop: '2px' }}>{s.label}</div>
               </div>
@@ -245,27 +215,79 @@ export default function LandingPage() {
                 onMouseLeave={e => e.currentTarget.style.background = 'var(--white)'}
               >
                 <div style={{
-                  width: '44px',
-                  height: '44px',
+                  width: '44px', height: '44px',
                   background: 'var(--green-pale)',
                   borderRadius: 'var(--radius-sm)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'var(--green)',
-                  marginBottom: '20px',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: 'var(--green)', marginBottom: '20px',
                 }}>
                   {f.icon}
                 </div>
-                <h3 style={{
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  marginBottom: '10px',
-                  letterSpacing: '-0.01em',
-                }}>{f.title}</h3>
+                <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '10px', letterSpacing: '-0.01em' }}>{f.title}</h3>
                 <p style={{ fontSize: '14px', color: 'var(--ink-muted)', lineHeight: '1.65' }}>{f.description}</p>
               </div>
             ))}
+
+            {/* ── CTA slot — replaces the removed Reminders card ── */}
+            <div
+              style={{
+                background: 'var(--white)',
+                padding: '32px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                justifyContent: 'center',
+                gap: '20px',
+                transition: 'background 0.2s ease',
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = 'var(--cream)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'var(--white)'}
+            >
+              <div style={{
+                width: '44px', height: '44px',
+                background: 'var(--green-pale)',
+                borderRadius: 'var(--radius-sm)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: 'var(--green)',
+              }}>
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                  <path d="M11 3C11 3 6 6.5 6 11.5C6 14.5 8.2 17 11 17C13.8 17 16 14.5 16 11.5C16 6.5 11 3 11 3Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+                  <path d="M8 14.5C9 15.8 10 16.3 11 16.3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" opacity="0.5"/>
+                </svg>
+              </div>
+              <div>
+                <h3 style={{
+                  fontSize: '16px', fontWeight: '600', letterSpacing: '-0.01em',
+                  color: 'var(--ink)', marginBottom: '8px',
+                }}>
+                  Ready to get started?
+                </h3>
+                <p style={{ fontSize: '14px', color: 'var(--ink-muted)', lineHeight: '1.65' }}>
+                  Join V-Fit and take control of your fitness and nutrition — all in one place.
+                </p>
+              </div>
+              <Link
+                to="/register"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '8px',
+                  padding: '10px 20px',
+                  background: 'var(--green)',
+                  color: 'white',
+                  borderRadius: '100px',
+                  fontSize: '14px', fontWeight: '600',
+                  textDecoration: 'none',
+                  transition: 'opacity 0.2s ease, transform 0.2s ease',
+                  marginTop: '4px',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.opacity = '0.88'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                onMouseLeave={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(0)'; }}
+              >
+                Explore now
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M2 7H12M8 3L12 7L8 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -281,8 +303,7 @@ export default function LandingPage() {
                 fontSize: 'clamp(30px, 3.5vw, 44px)',
                 letterSpacing: '-0.025em',
                 lineHeight: '1.15',
-                marginBottom: '48px',
-                marginTop: '12px',
+                marginBottom: '48px', marginTop: '12px',
               }}>
                 Three steps to a better routine.
               </h2>
@@ -293,10 +314,8 @@ export default function LandingPage() {
                     <div style={{
                       flexShrink: 0,
                       fontFamily: 'var(--font-display)',
-                      fontSize: '13px',
-                      color: 'var(--green)',
-                      letterSpacing: '0.05em',
-                      paddingTop: '3px',
+                      fontSize: '13px', color: 'var(--green)',
+                      letterSpacing: '0.05em', paddingTop: '3px',
                     }}>{s.num}</div>
                     <div>
                       <h4 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '6px', letterSpacing: '-0.01em' }}>{s.title}</h4>
@@ -307,9 +326,7 @@ export default function LandingPage() {
               </div>
 
               <div style={{ marginTop: '48px' }}>
-                <Link to="/register" className="btn btn-green">
-                  Get started free
-                </Link>
+                <Link to="/register" className="btn btn-green">Get started free</Link>
               </div>
             </div>
 
@@ -322,7 +339,6 @@ export default function LandingPage() {
                 padding: '28px',
                 boxShadow: 'var(--shadow-lg)',
               }}>
-                {/* Mini dashboard mockup */}
                 <div style={{ marginBottom: '24px' }}>
                   <div style={{ fontSize: '12px', color: 'var(--ink-light)', marginBottom: '6px', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '0.06em' }}>This week</div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
@@ -330,11 +346,7 @@ export default function LandingPage() {
                       { label: 'Calories', value: '1,840', sub: '/ 2,100 goal', color: 'var(--green)' },
                       { label: 'Workouts', value: '3', sub: '/ 4 planned', color: 'var(--accent)' },
                     ].map(m => (
-                      <div key={m.label} style={{
-                        background: 'var(--cream)',
-                        borderRadius: 'var(--radius-md)',
-                        padding: '16px',
-                      }}>
+                      <div key={m.label} style={{ background: 'var(--cream)', borderRadius: 'var(--radius-md)', padding: '16px' }}>
                         <div style={{ fontSize: '12px', color: 'var(--ink-light)', marginBottom: '6px' }}>{m.label}</div>
                         <div style={{ fontFamily: 'var(--font-display)', fontSize: '24px', letterSpacing: '-0.02em', color: m.color }}>{m.value}</div>
                         <div style={{ fontSize: '11px', color: 'var(--ink-light)', marginTop: '2px' }}>{m.sub}</div>
@@ -343,7 +355,6 @@ export default function LandingPage() {
                   </div>
                 </div>
 
-                {/* Progress bars */}
                 <div style={{ marginBottom: '24px' }}>
                   <div style={{ fontSize: '12px', color: 'var(--ink-light)', marginBottom: '12px', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Macros today</div>
                   {[
@@ -363,27 +374,17 @@ export default function LandingPage() {
                   ))}
                 </div>
 
-                {/* Recent workout */}
                 <div style={{
-                  background: 'var(--green-pale)',
-                  borderRadius: 'var(--radius-md)',
-                  padding: '14px 16px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
+                  background: 'var(--green-pale)', borderRadius: 'var(--radius-md)',
+                  padding: '14px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                 }}>
                   <div>
                     <div style={{ fontSize: '13px', fontWeight: '600', color: 'var(--green)', marginBottom: '2px' }}>Today: Upper Body</div>
                     <div style={{ fontSize: '12px', color: 'var(--green)' }}>4 exercises · 45 min</div>
                   </div>
                   <div style={{
-                    width: '32px',
-                    height: '32px',
-                    background: 'var(--green)',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                    width: '32px', height: '32px', background: 'var(--green)',
+                    borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}>
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                       <path d="M5 7L7 9L10 5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -392,18 +393,11 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* Floating badge */}
               <div style={{
-                position: 'absolute',
-                top: '-16px',
-                right: '-16px',
-                background: 'var(--ink)',
-                color: 'var(--cream)',
-                borderRadius: 'var(--radius-md)',
-                padding: '10px 16px',
-                fontSize: '12px',
-                fontWeight: '500',
-                boxShadow: 'var(--shadow-md)',
+                position: 'absolute', top: '-16px', right: '-16px',
+                background: 'var(--ink)', color: 'var(--cream)',
+                borderRadius: 'var(--radius-md)', padding: '10px 16px',
+                fontSize: '12px', fontWeight: '500', boxShadow: 'var(--shadow-md)',
               }}>
                 AI-powered ✦
               </div>
@@ -418,10 +412,8 @@ export default function LandingPage() {
           <h2 style={{
             fontFamily: 'var(--font-display)',
             fontSize: 'clamp(32px, 4.5vw, 56px)',
-            color: 'var(--cream)',
-            letterSpacing: '-0.03em',
-            lineHeight: '1.1',
-            marginBottom: '20px',
+            color: 'var(--cream)', letterSpacing: '-0.03em',
+            lineHeight: '1.1', marginBottom: '20px',
           }}>
             Ready to start your journey?
           </h2>
@@ -429,11 +421,7 @@ export default function LandingPage() {
             Join V-Fit and get a complete fitness and nutrition platform — built around your goals.
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-            <Link to="/register" className="btn btn-lg" style={{
-              background: 'var(--cream)',
-              color: 'var(--ink)',
-              borderColor: 'var(--cream)',
-            }}>
+            <Link to="/register" className="btn btn-lg" style={{ background: 'var(--cream)', color: 'var(--ink)', borderColor: 'var(--cream)' }}>
               Create your account
             </Link>
             <Link to="/login" className="btn btn-lg btn-ghost" style={{ color: 'rgba(247,244,238,0.7)', borderColor: 'rgba(247,244,238,0.2)' }}>
@@ -448,16 +436,12 @@ export default function LandingPage() {
         background: 'var(--ink)',
         borderTop: '1px solid rgba(247,244,238,0.08)',
         padding: '24px 32px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div style={{
-            width: '24px', height: '24px',
-            background: 'var(--green)',
-            borderRadius: '7px',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            width: '24px', height: '24px', background: 'var(--green)',
+            borderRadius: '7px', display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
               <path d="M6 1.5C6 1.5 3.5 3.5 3.5 6.5C3.5 8.5 4.5 10 6 10C7.5 10 8.5 8.5 8.5 6.5C8.5 3.5 6 1.5 6 1.5Z" fill="white"/>
