@@ -57,6 +57,8 @@ jobs:
 
       - name: Verify Frontend builds
         working-directory: ./v-fit/frontend
+        env:
+          CI: false
         run: |
           npm ci
           npm run build
