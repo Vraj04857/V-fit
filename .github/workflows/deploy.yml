@@ -86,32 +86,10 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          envs: POSTGRES_PASSWORD,JWT_SECRET,MAIL_PASSWORD,OPENROUTER_API_KEY,WGER_API_KEY,USDA_API_KEY,GOOGLE_CLIENT_ID
           script: |
             cd /home/ubuntu/v-fit/v-fit
-
-            # Pull latest code
             git pull origin main
-
-            # Update .env with latest secrets
-            cat > .env << EOF
-            POSTGRES_DB=vfit_db
-            POSTGRES_USER=vfit_user
-            POSTGRES_PASSWORD=$POSTGRES_PASSWORD
-            JWT_SECRET=$JWT_SECRET
-            MAIL_PASSWORD=$MAIL_PASSWORD
-            OPENROUTER_API_KEY=$OPENROUTER_API_KEY
-            WGER_API_KEY=$WGER_API_KEY
-            USDA_API_KEY=$USDA_API_KEY
-            GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID
-            FRONTEND_URL=https://vfitdemo.com
-            EOF
-
-            # Build JAR
             cd backend && ./mvnw clean package -DskipTests && cd ..
-
-            # Rebuild Docker containers
             docker compose down
             docker compose up -d --build
-
             echo "✅ Deployment to https://vfitdemo.com complete!"
