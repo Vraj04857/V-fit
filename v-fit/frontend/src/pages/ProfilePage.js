@@ -216,6 +216,11 @@ export default function ProfilePage() {
   const [toast, setToast] = useState(null);
   const [form, setForm] = useState({});
   const [activeNav] = useState('/profile');
+  const [useMetric, setUseMetric] = useState(true);
+  // Imperial display state (separate from stored kg/cm)
+  const [impWeight, setImpWeight] = useState('');
+  const [impFeet, setImpFeet]     = useState('');
+  const [impInches, setImpInches] = useState('');
 
   const user = JSON.parse(localStorage.getItem('user') || '{}');
 
@@ -239,6 +244,40 @@ export default function ProfilePage() {
     };
     fetchProfile();
   }, [navigate, showToast]);
+
+  // Sync imperial display fields from stored metric values
+  React.useEffect(() => {
+    if (!useMetric) {
+      if (form.weight) {
+        setImpWeight(((form.weight) * 2.20462).toFixed(1));
+      }
+      if (form.height) {
+        const totalInches = form.height / 2.54;
+        setImpFeet(String(Math.floor(totalInches / 12)));
+        setImpInches(String(Math.round(totalInches % 12)));
+      }
+    }
+  }, [useMetric, form.weight, form.height]);
+
+  // Convert imperial inputs → metric and store in form
+  const handleImperialWeight = (val) => {
+    setImpWeight(val);
+    const kg = parseFloat(val) / 2.20462;
+    if (!isNaN(kg)) handleChange('weight', Math.round(kg * 10) / 10);
+  };
+
+  const handleImperialHeight = (feet, inches) => {
+    const f = parseInt(feet) || 0;
+    const i = parseInt(inches) || 0;
+    setImpFeet(String(f));
+    setImpInches(String(i));
+    const cm = (f * 12 + i) * 2.54;
+    if (cm > 0) handleChange('height', Math.round(cm * 10) / 10);
+  };
+
+  const handleUnitToggle = () => {
+    setUseMetric(prev => !prev);
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -545,20 +584,147 @@ export default function ProfilePage() {
                       />
                     )}
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">Height (cm)</label>
-                    <input type="number" className="form-input" value={form.height || ''} readOnly={!editing}
-                      onChange={e => handleChange('height', parseFloat(e.target.value) || null)}
-                      style={{ opacity: editing ? 1 : 0.8, cursor: editing ? 'text' : 'default' }}
-                    />
+                  {/* ── Unit Toggle ── */}
+                  <div style={{ gridColumn: '1 / -1', marginBottom: '4px' }}>
+                    <div style={{
+                      display: 'inline-flex', alignItems: 'center', gap: '0',
+                      background: 'rgba(44,44,26,0.06)', borderRadius: '100px', padding: '3px',
+                      border: '1px solid rgba(44,44,26,0.08)',
+                    }}>
+                      <button
+                        onClick={() => editing && !useMetric && handleUnitToggle()}
+                        disabled={!editing}
+                        style={{
+                          padding: '6px 16px', borderRadius: '100px', border: 'none',
+                          background: useMetric ? 'var(--green)' : 'transparent',
+                          color: useMetric ? 'white' : 'var(--ink-muted)',
+                          fontSize: '12px', fontWeight: useMetric ? '600' : '400',
+                          cursor: editing && !useMetric ? 'pointer' : 'default',
+                          fontFamily: 'var(--font-body)',
+                          transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                        }}>
+                        Metric (kg / cm)
+                      </button>
+                      <button
+                        onClick={() => editing && useMetric && handleUnitToggle()}
+                        disabled={!editing}
+                        style={{
+                          padding: '6px 16px', borderRadius: '100px', border: 'none',
+                          background: !useMetric ? 'var(--green)' : 'transparent',
+                          color: !useMetric ? 'white' : 'var(--ink-muted)',
+                          fontSize: '12px', fontWeight: !useMetric ? '600' : '400',
+                          cursor: editing && useMetric ? 'pointer' : 'default',
+                          fontFamily: 'var(--font-body)',
+                          transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                        }}>
+                        Imperial (lbs / ft)
+                      </button>
+                    </div>
+                    {editing && (
+                      <span style={{
+                        marginLeft: '10px', fontSize: '11px', color: 'var(--ink-light)',
+                        animation: 'fadeIn 0.3s ease',
+                      }}>
+                        {useMetric ? 'Enter in kilograms & centimeters' : 'Enter in pounds & feet/inches'}
+                      </span>
+                    )}
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">Weight (kg)</label>
-                    <input type="number" className="form-input" value={form.weight || ''} readOnly={!editing}
-                      onChange={e => handleChange('weight', parseFloat(e.target.value) || null)}
-                      style={{ opacity: editing ? 1 : 0.8, cursor: editing ? 'text' : 'default' }}
-                    />
+
+                  {/* ── Height field ── */}
+                  <div className="form-group" style={{ animation: 'fadeIn 0.3s ease' }}>
+                    <label className="form-label">
+                      Height {useMetric ? '(cm)' : '(ft / in)'}
+                    </label>
+                    {useMetric ? (
+                      <input type="number" className="form-input"
+                        value={form.height || ''}
+                        readOnly={!editing}
+                        onChange={e => handleChange('height', parseFloat(e.target.value) || null)}
+                        placeholder="e.g. 170"
+                        style={{ opacity: editing ? 1 : 0.8, cursor: editing ? 'text' : 'default' }}
+                      />
+                    ) : (
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <div style={{ position: 'relative', flex: 1 }}>
+                          <input type="number" className="form-input"
+                            value={impFeet}
+                            readOnly={!editing}
+                            onChange={e => handleImperialHeight(e.target.value, impInches)}
+                            placeholder="5"
+                            style={{ opacity: editing ? 1 : 0.8, cursor: editing ? 'text' : 'default', paddingRight: '32px' }}
+                          />
+                          <span style={{
+                            position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)',
+                            fontSize: '12px', color: 'var(--ink-light)', fontWeight: '500', pointerEvents: 'none',
+                          }}>ft</span>
+                        </div>
+                        <div style={{ position: 'relative', flex: 1 }}>
+                          <input type="number" className="form-input"
+                            value={impInches}
+                            readOnly={!editing}
+                            onChange={e => handleImperialHeight(impFeet, e.target.value)}
+                            placeholder="7"
+                            min="0" max="11"
+                            style={{ opacity: editing ? 1 : 0.8, cursor: editing ? 'text' : 'default', paddingRight: '32px' }}
+                          />
+                          <span style={{
+                            position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)',
+                            fontSize: '12px', color: 'var(--ink-light)', fontWeight: '500', pointerEvents: 'none',
+                          }}>in</span>
+                        </div>
+                      </div>
+                    )}
+                    {/* Show converted value as hint when editing */}
+                    {editing && form.height && (
+                      <div style={{ fontSize: '11px', color: 'var(--ink-light)', marginTop: '4px', animation: 'fadeIn 0.2s ease' }}>
+                        {useMetric
+                          ? (() => { const t = form.height / 2.54; return `≈ ${Math.floor(t/12)} ft ${Math.round(t%12)} in`; })()
+                          : `≈ ${form.height} cm`
+                        }
+                      </div>
+                    )}
                   </div>
+
+                  {/* ── Weight field ── */}
+                  <div className="form-group" style={{ animation: 'fadeIn 0.3s ease' }}>
+                    <label className="form-label">
+                      Weight {useMetric ? '(kg)' : '(lbs)'}
+                    </label>
+                    <div style={{ position: 'relative' }}>
+                      {useMetric ? (
+                        <input type="number" className="form-input"
+                          value={form.weight || ''}
+                          readOnly={!editing}
+                          onChange={e => handleChange('weight', parseFloat(e.target.value) || null)}
+                          placeholder="e.g. 70"
+                          style={{ opacity: editing ? 1 : 0.8, cursor: editing ? 'text' : 'default', paddingRight: '40px' }}
+                        />
+                      ) : (
+                        <input type="number" className="form-input"
+                          value={impWeight}
+                          readOnly={!editing}
+                          onChange={e => handleImperialWeight(e.target.value)}
+                          placeholder="e.g. 154"
+                          style={{ opacity: editing ? 1 : 0.8, cursor: editing ? 'text' : 'default', paddingRight: '40px' }}
+                        />
+                      )}
+                      <span style={{
+                        position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)',
+                        fontSize: '12px', color: 'var(--ink-light)', fontWeight: '500', pointerEvents: 'none',
+                      }}>{useMetric ? 'kg' : 'lbs'}</span>
+                    </div>
+                    {/* Show converted value as hint when editing */}
+                    {editing && form.weight && (
+                      <div style={{ fontSize: '11px', color: 'var(--ink-light)', marginTop: '4px', animation: 'fadeIn 0.2s ease' }}>
+                        {useMetric
+                          ? `≈ ${(form.weight * 2.20462).toFixed(1)} lbs`
+                          : `≈ ${form.weight} kg`
+                        }
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ── BMI ── */}
                   {form.height && form.weight && (
                     <div className="form-group">
                       <label className="form-label">BMI</label>
@@ -567,6 +733,7 @@ export default function ProfilePage() {
                         background: 'var(--green-pale)', color: 'var(--green)',
                         fontSize: '15px', fontWeight: '600',
                         display: 'flex', alignItems: 'center', gap: '8px',
+                        animation: 'fadeIn 0.3s ease',
                       }}>
                         {(form.weight / ((form.height / 100) ** 2)).toFixed(1)}
                         <span style={{ fontSize: '12px', fontWeight: '400', opacity: 0.8 }}>
@@ -577,6 +744,9 @@ export default function ProfilePage() {
                             if (bmi < 30) return 'Overweight';
                             return 'Obese';
                           })()}
+                        </span>
+                        <span style={{ fontSize: '11px', color: 'var(--green)', opacity: 0.6, marginLeft: 'auto' }}>
+                          from kg/cm
                         </span>
                       </div>
                     </div>

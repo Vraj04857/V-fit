@@ -564,8 +564,23 @@ export default function DietPage() {
                           </div>
                         </div>
 
-                        {/* Calorie progress */}
-                        {plan.targetCalories > 0 && <div style={{ marginBottom: '16px' }}><CalorieBar current={Math.round(macros.calories)} target={plan.targetCalories} /></div>}
+                        {/* Calorie progress – show daily average when "All" is selected */}
+                        {plan.targetCalories > 0 && (() => {
+                          const displayCal = selectedDay === 0
+                            ? Math.round(macros.calories / 7)
+                            : Math.round(macros.calories);
+                          const barLabel = selectedDay === 0 ? 'Daily avg' : null;
+                          return (
+                            <div style={{ marginBottom: '16px' }}>
+                              {selectedDay === 0 && (
+                                <p style={{ fontSize: '11px', color: 'var(--ink-light)', marginBottom: '4px' }}>
+                                  Showing daily average across 7 days
+                                </p>
+                              )}
+                              <CalorieBar current={displayCal} target={plan.targetCalories} label={barLabel} />
+                            </div>
+                          );
+                        })()}
 
                         {/* Meals grouped by type */}
                         {dayMeals.length === 0 ? (
@@ -585,6 +600,11 @@ export default function DietPage() {
                                       <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '8px 12px', borderRadius: '10px', background: 'rgba(250,250,240,0.6)', border: '1px solid rgba(44,44,26,0.04)', animation: `slideUp 0.3s ease ${i * 0.03}s both` }}>
                                         <div style={{ flex: 1 }}>
                                           <span style={{ fontSize: '13px', fontWeight: '500', color: 'var(--ink)' }}>{meal.foodName || 'Meal'}</span>
+                                          {meal.servingSize && (
+                                            <div style={{ fontSize: '11px', color: 'var(--ink-light)', marginTop: '1px' }}>
+                                              {meal.servingSize}
+                                            </div>
+                                          )}
                                         </div>
                                         <div style={{ display: 'flex', gap: '8px', fontSize: '11px' }}>
                                           <span style={{ color: MACRO_COLORS.protein }}>P{Math.round(meal.proteinGrams || 0)}</span>

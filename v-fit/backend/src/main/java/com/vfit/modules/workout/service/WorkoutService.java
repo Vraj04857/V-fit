@@ -191,6 +191,7 @@ public class WorkoutService {
             dto.setLibraryExerciseId(exercise.getLibraryExercise().getLibraryExerciseId());
             dto.setExerciseName(exercise.getLibraryExercise().getExerciseName());
             dto.setCategory(exercise.getLibraryExercise().getCategory());
+            dto.setMuscleGroup(exercise.getLibraryExercise().getMuscleGroup());
         }
 
         dto.setSets(exercise.getSets());

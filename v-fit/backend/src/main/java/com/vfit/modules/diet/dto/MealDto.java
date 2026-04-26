@@ -11,6 +11,7 @@ public class MealDto {
     private Float carbsGrams;
     private Float fatsGrams;
     private Integer dayOfWeek;
+    private String servingSize;
 
     // Constructors
     public MealDto() {}
@@ -25,6 +26,7 @@ public class MealDto {
     public Float getCarbsGrams() { return carbsGrams; }
     public Float getFatsGrams() { return fatsGrams; }
     public Integer getDayOfWeek() { return dayOfWeek; }
+    public String getServingSize() { return servingSize; }
 
     // Setters
     public void setMealId(Long mealId) { this.mealId = mealId; }
@@ -36,4 +38,5 @@ public class MealDto {
     public void setCarbsGrams(Float carbsGrams) { this.carbsGrams = carbsGrams; }
     public void setFatsGrams(Float fatsGrams) { this.fatsGrams = fatsGrams; }
     public void setDayOfWeek(Integer dayOfWeek) { this.dayOfWeek = dayOfWeek; }
+    public void setServingSize(String servingSize) { this.servingSize = servingSize; }
 }

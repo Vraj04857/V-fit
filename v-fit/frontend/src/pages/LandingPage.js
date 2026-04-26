@@ -68,7 +68,7 @@ const steps = [
 
 const stats = [
   { value: '12+', label: 'Core features' },
-  { value: '20+', label: 'Food library items' },
+  { value: '100+', label: 'Food library items' },
   { value: '80+', label: 'Exercise templates' },
   { value: '100%', label: 'Personalized' },
 ];

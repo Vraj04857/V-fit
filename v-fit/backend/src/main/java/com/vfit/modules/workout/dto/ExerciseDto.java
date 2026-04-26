@@ -10,6 +10,7 @@ public class ExerciseDto {
     private Integer reps;
     private Integer durationMinutes;
     private Integer dayOfWeek;
+    private String muscleGroup;
 
     // Constructors
     public ExerciseDto() {}
@@ -23,6 +24,7 @@ public class ExerciseDto {
     public Integer getReps() { return reps; }
     public Integer getDurationMinutes() { return durationMinutes; }
     public Integer getDayOfWeek() { return dayOfWeek; }
+    public String getMuscleGroup() { return muscleGroup; }
 
     // Setters
     public void setExerciseId(Long exerciseId) { this.exerciseId = exerciseId; }
@@ -33,4 +35,5 @@ public class ExerciseDto {
     public void setReps(Integer reps) { this.reps = reps; }
     public void setDurationMinutes(Integer durationMinutes) { this.durationMinutes = durationMinutes; }
     public void setDayOfWeek(Integer dayOfWeek) { this.dayOfWeek = dayOfWeek; }
+    public void setMuscleGroup(String muscleGroup) { this.muscleGroup = muscleGroup; }
 }

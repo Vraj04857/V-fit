@@ -191,6 +191,7 @@ public class DietService {
         if (meal.getFood() != null) {
             dto.setFoodId(meal.getFood().getFoodId());
             dto.setFoodName(meal.getFood().getFoodName());
+            dto.setServingSize(meal.getFood().getServingSize());
         }
 
         dto.setMealType(meal.getMealType());
