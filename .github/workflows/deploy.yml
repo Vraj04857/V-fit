@@ -89,7 +89,7 @@ jobs:
           script: |
             cd /home/ubuntu/v-fit/v-fit
             git pull origin main
-            cd backend && ./mvnw clean package -DskipTests && cd ..
+            cd backend && ./mvn clean package -DskipTests && cd ..
             docker compose down
             docker compose up -d --build
             echo "✅ Deployment to https://vfitdemo.com complete!"
