@@ -78,7 +78,7 @@ const stack = [
   {
     layer: 'DevOps',
     color: '#2C5F8A',
-    items: ['Docker Compose', 'AWS EC2', 'GitHub Actions CI/CD', 'Ubuntu Server'],
+    items: ['Docker Compose', 'AWS EC2', 'GitHub Actions CI/CD', 'Ubuntu Server', "HTTPS (Let's Encrypt)", 'Custom Domain (vfitdemo.com)'],
   },
 ];
 
@@ -452,8 +452,9 @@ export default function AboutPage() {
                 <span style={{
                   display: 'inline-flex', alignItems: 'center', gap: '6px',
                   padding: '5px 12px', borderRadius: '100px',
-                  background: 'rgba(107,158,94,0.2)', color: 'var(--green)',
-                  fontSize: '12px', fontWeight: '500', letterSpacing: '0.04em',
+                  background: 'rgba(107,158,94,0.35)', color: '#a8d49a',
+                  border: '1px solid rgba(107,158,94,0.5)',
+                  fontSize: '12px', fontWeight: '600', letterSpacing: '0.08em',
                   marginBottom: '20px', textTransform: 'uppercase',
                 }}>
                   Thesis Context
@@ -479,17 +480,26 @@ export default function AboutPage() {
                   { label: 'Advisor', value: 'John Kaufman' },
                   { label: 'Second Reader', value: 'Hiva Samadian' },
                   { label: 'Duration', value: 'Two Semesters · 2024 – 2025' },
-                  { label: 'Deployment', value: 'AWS EC2 (Ubuntu, Docker Compose)' },
-                  { label: 'Repository', value: 'github.com/Vraj04857/V-fit' },
-                ].map(({ label, value }) => (
+                  { label: 'Deployment', value: 'AWS EC2 · Docker · HTTPS (SSL)' },
+                  { label: 'Live URL', value: 'vfitdemo.com', link: 'https://vfitdemo.com' },
+                  { label: 'Repository', value: 'github.com/Vraj04857/V-fit', link: 'https://github.com/Vraj04857/V-fit' },
+                ].map(({ label, value, link }) => (
                   <div key={label} style={{
                     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                     padding: '10px 16px',
                     background: 'rgba(255,255,255,0.05)',
                     borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)',
+                    transition: 'background 0.15s',
                   }}>
                     <span style={{ fontSize: '12px', color: 'rgba(247,244,238,0.45)', fontWeight: '500' }}>{label}</span>
-                    <span style={{ fontSize: '13px', color: 'var(--cream)', fontWeight: '500' }}>{value}</span>
+                    {link ? (
+                      <a href={link} target="_blank" rel="noopener noreferrer" style={{
+                        fontSize: '13px', color: '#a8d49a', fontWeight: '500',
+                        textDecoration: 'none', borderBottom: '1px solid rgba(168,212,154,0.3)',
+                      }}>{value}</a>
+                    ) : (
+                      <span style={{ fontSize: '13px', color: 'var(--cream)', fontWeight: '500' }}>{value}</span>
+                    )}
                   </div>
                 ))}
               </div>
