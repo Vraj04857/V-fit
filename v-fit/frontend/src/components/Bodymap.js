@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
 /* ═══════════════════════════════════════════
-   MUSCLE REGION SVG PATHS
-   Front view and back view definitions
+  MUSCLE REGION SVG PATHS
+  Front view and back view definitions
    ═══════════════════════════════════════════ */
 
 const FRONT_REGIONS = {
